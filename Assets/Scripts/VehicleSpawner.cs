@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* TODO:
+    -Separate vehicle queue to another class
+    -Delete vehicle from queue if pass intersection
+    -Use list instead of queue because Unity can't serialize queue
+    -If that road is full, do not spawn.
+*/ 
 public class VehicleSpawner : MonoBehaviour
 {
     [System.Serializable]

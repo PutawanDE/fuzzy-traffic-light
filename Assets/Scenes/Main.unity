@@ -106,15 +106,15 @@ NavMeshSettings:
   m_BuildSettings:
     serializedVersion: 2
     agentTypeID: 0
-    agentRadius: 0.45
+    agentRadius: 0.8
     agentHeight: 2
-    agentSlope: 8.6
-    agentClimb: 0.25
+    agentSlope: 0
+    agentClimb: 0
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
     manualCellSize: 0
-    cellSize: 0.14999999
+    cellSize: 0.26666668
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
@@ -234,7 +234,7 @@ GameObject:
   - component: {fileID: 96507024}
   m_Layer: 0
   m_Name: DestMarker2
-  m_TagString: Untagged
+  m_TagString: DestMarker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -247,7 +247,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 96507023}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -428,7 +428,7 @@ GameObject:
   - component: {fileID: 281299088}
   m_Layer: 0
   m_Name: DestMarker1
-  m_TagString: Untagged
+  m_TagString: DestMarker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -441,7 +441,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 281299087}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -909,8 +909,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c1c79de5133c4448ae8b2620676922, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnCooldownMin: 3
-  spawnCooldownMax: 5
+  spawnCooldownMin: 1
+  spawnCooldownMax: 2
   roadsToSpawnOn:
   - spawnMarker: {fileID: 1182302340}
     stopMarker: {fileID: 369409035}
@@ -2109,7 +2109,7 @@ GameObject:
   - component: {fileID: 1046253181}
   m_Layer: 0
   m_Name: DestMarker3
-  m_TagString: Untagged
+  m_TagString: DestMarker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2122,7 +2122,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1046253180}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -2401,7 +2401,7 @@ GameObject:
   - component: {fileID: 1135052124}
   m_Layer: 0
   m_Name: DestMarker0
-  m_TagString: Untagged
+  m_TagString: DestMarker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2414,7 +2414,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1135052123}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -2712,6 +2712,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a35850fa9dd58f4493315571dafac4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxRayDistance: 0
+  spaceBetweenVehicle: 0
+  debugOn: 0
 --- !u!195 &1200724145
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -6101,7 +6104,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4612554735754083369, guid: fd179f274971d714cb459642d923cc91, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -35.3
+      value: -14.76
       objectReference: {fileID: 0}
     - target: {fileID: 4612554735754083369, guid: fd179f274971d714cb459642d923cc91, type: 3}
       propertyPath: m_LocalRotation.w
