@@ -1,13 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-/* TODO:
-    -Separate vehicle queue to another class
-    -Delete vehicle from queue if pass intersection
-    -Use list instead of queue because Unity can't serialize queue
-    -If that road is full, do not spawn.
-*/ 
 public class VehicleSpawner : MonoBehaviour
 {
     [System.Serializable]
@@ -25,13 +18,9 @@ public class VehicleSpawner : MonoBehaviour
         public GameObject vehicle;
     }
 
-    [System.Serializable]
-    public class VehicleQueue
-    {
-        public Queue<GameObject> queue = new Queue<GameObject>();
-    }
+    private TrafficController trafficController;
 
-    private const int numberOfRoads = 4;
+    private const int numberOfRoads = TrafficController.numberOfRoads;
 
     [SerializeField]
     private float spawnCooldownMin, spawnCooldownMax;
@@ -42,13 +31,11 @@ public class VehicleSpawner : MonoBehaviour
     [SerializeField]
     private VehicleToSpawn[] vehiclesToSpawn;
 
-    [SerializeField]
-    private VehicleQueue[] vehiclesQueues = new VehicleQueue[numberOfRoads];
-
     private IEnumerator spawnCourantine;
 
     void Start()
     {
+        trafficController = GetComponent<TrafficController>();
         spawnCourantine = WaitAndSpawn();
         StartCoroutine(spawnCourantine);
     }
@@ -66,10 +53,13 @@ public class VehicleSpawner : MonoBehaviour
     private void SpawnVehicle()
     {
         int selectedSrc = (int)Mathf.Floor(Random.Range(0f, numberOfRoads));
+
+        if (trafficController.isFull(selectedSrc)) return;
+
         GameObject vehicleToSpawn = vehiclesToSpawn[
             (int)Mathf.Floor(Random.Range(0f, vehiclesToSpawn.Length))].vehicle;
 
-        if (vehicleToSpawn == null || selectedSrc == -1) return;
+        if (vehicleToSpawn == null) return;
 
         int selectedDest = (int)Mathf.Floor(Random.Range(0f, numberOfRoads));
         while (selectedSrc == selectedDest)
@@ -82,8 +72,8 @@ public class VehicleSpawner : MonoBehaviour
         Vector3 spawnPos = roadToSpawnOn.spawnMarker.position;
 
         GameObject newVehicle = (GameObject)Instantiate(vehicleToSpawn, spawnPos, roadToSpawnOn.spawnQuaternion);
-        vehiclesQueues[selectedSrc].queue.Enqueue(newVehicle);
+        trafficController.EnqueueVehicle(newVehicle, selectedSrc);
         VehicleNav nav = newVehicle.GetComponent<VehicleNav>();
-        nav.Init(selectedSrc, roadToSpawnOn.stopMarker, destRoad.destMarker);
+        nav.Init(selectedSrc, roadToSpawnOn.stopMarker, destRoad.destMarker, trafficController, selectedSrc);
     }
 }

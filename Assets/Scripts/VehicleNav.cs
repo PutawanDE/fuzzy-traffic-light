@@ -9,18 +9,24 @@ public class VehicleNav : MonoBehaviour
     private float spaceBetweenVehicle;
     [SerializeField]
     private bool debugOn;
+    [SerializeField]
+    private int roadNum;
 
     private Transform stopMarker;
     private Transform destTransform;
 
     private NavMeshAgent navMeshAgent;
+    private TrafficController trafficController;
 
     private bool isInit;
 
-    public void Init(int srcRoadNum, Transform stopMarker, Transform destTransform)
+    public void Init(int srcRoadNum, Transform stopMarker, Transform destTransform,
+        TrafficController trafficController, int roadNum)
     {
         this.stopMarker = stopMarker;
         this.destTransform = destTransform;
+        this.trafficController = trafficController;
+        this.roadNum = roadNum;
 
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.destination = destTransform.position;
@@ -58,6 +64,10 @@ public class VehicleNav : MonoBehaviour
         if (other.tag == "DestMarker")
         {
             Destroy(this.gameObject);
+        }
+        else if (other.tag == "JunctionMarker")
+        {
+            trafficController.DequeueVehicle(roadNum);
         }
     }
 
