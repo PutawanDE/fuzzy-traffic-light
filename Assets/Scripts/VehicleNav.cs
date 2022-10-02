@@ -8,11 +8,13 @@ public class VehicleNav : MonoBehaviour
     [SerializeField]
     private float spaceBetweenVehicle;
     [SerializeField]
+    private float intersectionStopDistance;
+    [SerializeField]
     private bool debugOn;
     [SerializeField]
-    private int roadNum;
+    private int currentlyOnRoad;
 
-    private Transform stopMarker;
+    // private Transform stopMarker;
     private Transform destTransform;
 
     private NavMeshAgent navMeshAgent;
@@ -23,10 +25,10 @@ public class VehicleNav : MonoBehaviour
     public void Init(int srcRoadNum, Transform stopMarker, Transform destTransform,
         TrafficController trafficController, int roadNum)
     {
-        this.stopMarker = stopMarker;
+        // this.stopMarker = stopMarker;
         this.destTransform = destTransform;
         this.trafficController = trafficController;
-        this.roadNum = roadNum;
+        this.currentlyOnRoad = roadNum;
 
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.destination = destTransform.position;
@@ -44,11 +46,21 @@ public class VehicleNav : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, maxRayDistance))
         {
-            if (hit.collider.tag == "Vehicle")
+            if (hit.collider.tag == "Vehicle" || hit.collider.tag == "Stop")
             {
                 if (debugOn) Debug.Log("Hit a vehicle. Distance: " + hit.distance);
 
                 if (hit.distance <= spaceBetweenVehicle)
+                {
+                    navMeshAgent.isStopped = true;
+                    return;
+                }
+            }
+            else if (hit.collider.tag == "Stop")
+            {
+                if (debugOn) Debug.Log("Hit a stop marker. Distance: " + hit.distance);
+
+                if (hit.distance <= intersectionStopDistance)
                 {
                     navMeshAgent.isStopped = true;
                     return;
@@ -67,17 +79,7 @@ public class VehicleNav : MonoBehaviour
         }
         else if (other.tag == "JunctionMarker")
         {
-            trafficController.DequeueVehicle(roadNum);
+            trafficController.DequeueVehicle(currentlyOnRoad);
         }
-    }
-
-    public void StopAtIntersection()
-    {
-        navMeshAgent.destination = stopMarker.position;
-    }
-
-    public void GoAtIntersection()
-    {
-        navMeshAgent.destination = destTransform.position;
     }
 }
