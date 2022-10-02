@@ -92,6 +92,12 @@ public class TrafficLightFuzzyLogic : MonoBehaviour
                 priorityMembershipVal = priorityLowMembershipVal;
             }
 
+            // Mandani Implication
+            firingStrength = Mathf.Min(queueingMembershipVal, priorityMembershipVal);
+
+            // Do not fire
+            if(firingStrength <= 0f) continue;
+
             // Find mode of the output set
             if (rules[i].greenLightDuration == linguisticVar.High)
             {
@@ -105,9 +111,6 @@ public class TrafficLightFuzzyLogic : MonoBehaviour
             {
                 outputSetMode = greenLighDurationSetModes.low;
             }
-
-            // Mandani Implication
-            firingStrength = Mathf.Min(queueingMembershipVal, priorityMembershipVal);
 
             // Calculations for defuzzification
             totalFiringStrengthMulMode += firingStrength * outputSetMode;
