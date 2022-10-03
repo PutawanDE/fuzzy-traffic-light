@@ -118,7 +118,10 @@ public class TrafficLightFuzzyLogic : MonoBehaviour
         }
 
         // Continue defuzzifying
-        float result = totalFiringStrengthMulMode / totalFiringStrengths;
+        float result = 0f;
+        if(totalFiringStrengths > 0f) 
+            result = totalFiringStrengthMulMode / totalFiringStrengths;
+        
         return result;
     }
 }
