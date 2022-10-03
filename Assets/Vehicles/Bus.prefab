@@ -134,10 +134,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a35850fa9dd58f4493315571dafac4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  priority: 5
+  raycastVerticalOffset: -1
   maxRayDistance: 10
   spaceBetweenVehicle: 8
   intersectionStopDistance: 6
-  debugOn: 0
+  debugOn: 1
   currentlyOnRoad: 0
 --- !u!54 &344234361921085207
 Rigidbody:

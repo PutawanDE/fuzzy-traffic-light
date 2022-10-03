@@ -7,15 +7,8 @@ public class VehicleSpawner : MonoBehaviour
     public class Road
     {
         public Transform spawnMarker;
-        public Transform stopMarker;
         public Transform destMarker;
         public Quaternion spawnQuaternion;
-    }
-
-    [System.Serializable]
-    public class VehicleToSpawn
-    {
-        public GameObject vehicle;
     }
 
     private TrafficController trafficController;
@@ -25,11 +18,15 @@ public class VehicleSpawner : MonoBehaviour
     [SerializeField]
     private float spawnCooldownMin, spawnCooldownMax;
 
-    [SerializeField]
+    [SerializeField, NonReorderable]
     private Road[] roadsToSpawnOn = new Road[numberOfRoads];
 
     [SerializeField]
-    private VehicleToSpawn[] vehiclesToSpawn;
+    private GameObject car;
+    [SerializeField]
+    private GameObject bus;
+    [SerializeField, Range(0f, 1f)]
+    private float carBusSpawnThreshold;
 
     private IEnumerator spawnCourantine;
 
@@ -54,10 +51,9 @@ public class VehicleSpawner : MonoBehaviour
     {
         int selectedSrc = (int)Mathf.Floor(Random.Range(0f, numberOfRoads));
 
-        if (trafficController.isFull(selectedSrc)) return;
+        if (!roadsToSpawnOn[selectedSrc].spawnMarker.GetComponent<CheckSpawnable>().isSpawnable) return;
 
-        GameObject vehicleToSpawn = vehiclesToSpawn[
-            (int)Mathf.Floor(Random.Range(0f, vehiclesToSpawn.Length))].vehicle;
+        GameObject vehicleToSpawn = Random.Range(0f, 1f) >= carBusSpawnThreshold ? bus : car;
 
         if (vehicleToSpawn == null) return;
 
@@ -74,6 +70,6 @@ public class VehicleSpawner : MonoBehaviour
         GameObject newVehicle = (GameObject)Instantiate(vehicleToSpawn, spawnPos, roadToSpawnOn.spawnQuaternion);
         trafficController.EnqueueVehicle(newVehicle, selectedSrc);
         VehicleNav nav = newVehicle.GetComponent<VehicleNav>();
-        nav.Init(selectedSrc, roadToSpawnOn.stopMarker, destRoad.destMarker, trafficController, selectedSrc);
+        nav.Init(selectedSrc, destRoad.destMarker, trafficController, selectedSrc);
     }
 }

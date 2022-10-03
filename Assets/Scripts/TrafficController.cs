@@ -15,7 +15,7 @@ public class TrafficController : MonoBehaviour
     [SerializeField]
     private GameObject[] stopMarkers = new GameObject[numberOfRoads];
 
-    [SerializeField]
+    [SerializeField, NonReorderable]
     private VehicleQueue[] vehicleQueues = new VehicleQueue[numberOfRoads];
 
     [SerializeField]
@@ -23,9 +23,6 @@ public class TrafficController : MonoBehaviour
 
     [SerializeField]
     private float[] greenLightDuration = new float[numberOfRoads];
-
-    [SerializeField]
-    private int[] roadCapacity = new int[numberOfRoads];
 
     [SerializeField]
     private bool isFixedTime = false;
@@ -40,23 +37,20 @@ public class TrafficController : MonoBehaviour
     {
         isStart = true;
         vehicleQueues[roadNum].list.Add(v);
-        // currentRoadPriorites += 
+        currentRoadPriorites[roadNum] += v.GetComponent<VehicleNav>().priority;
         UpdateGreenLightDuration();
     }
 
     public void DequeueVehicle(int roadNum)
     {
+        currentRoadPriorites[roadNum] -= vehicleQueues[roadNum].list[0]
+            .GetComponent<VehicleNav>().priority;
         vehicleQueues[roadNum].list.RemoveAt(0);
     }
 
     public int GetVehiclesCount(int roadNum)
     {
         return vehicleQueues[roadNum].list.Count;
-    }
-
-    public bool isFull(int roadNum)
-    {
-        return GetVehiclesCount(roadNum) >= roadCapacity[roadNum];
     }
 
     private void Awake()

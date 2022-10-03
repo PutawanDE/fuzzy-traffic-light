@@ -3,6 +3,10 @@ using UnityEngine.AI;
 
 public class VehicleNav : MonoBehaviour
 {
+    public int priority;
+
+    [SerializeField]
+    private float raycastVerticalOffset;
     [SerializeField]
     private float maxRayDistance;
     [SerializeField]
@@ -14,7 +18,6 @@ public class VehicleNav : MonoBehaviour
     [SerializeField]
     private int currentlyOnRoad;
 
-    // private Transform stopMarker;
     private Transform destTransform;
 
     private NavMeshAgent navMeshAgent;
@@ -22,10 +25,9 @@ public class VehicleNav : MonoBehaviour
 
     private bool isInit;
 
-    public void Init(int srcRoadNum, Transform stopMarker, Transform destTransform,
-        TrafficController trafficController, int roadNum)
+    public void Init(int srcRoadNum, Transform destTransform, TrafficController trafficController,
+                        int roadNum)
     {
-        // this.stopMarker = stopMarker;
         this.destTransform = destTransform;
         this.trafficController = trafficController;
         this.currentlyOnRoad = roadNum;
@@ -41,12 +43,16 @@ public class VehicleNav : MonoBehaviour
         if (!isInit) return;
 
         RaycastHit hit;
-        Ray ray = new Ray(transform.position, transform.forward);
+        Vector3 raycastPos = new Vector3(
+            transform.position.x,
+            transform.position.y + raycastVerticalOffset,
+            transform.position.z);
+        Ray ray = new Ray(raycastPos, transform.forward);
         if (debugOn) Debug.DrawRay(ray.origin, ray.direction * maxRayDistance);
 
         if (Physics.Raycast(ray, out hit, maxRayDistance))
         {
-            if (hit.collider.tag == "Vehicle" || hit.collider.tag == "Stop")
+            if (hit.collider.tag == "Vehicle")
             {
                 if (debugOn) Debug.Log("Hit a vehicle. Distance: " + hit.distance);
 
