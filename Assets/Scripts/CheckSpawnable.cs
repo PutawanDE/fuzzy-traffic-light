@@ -6,11 +6,11 @@ public class CheckSpawnable : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Vehicle") isSpawnable = false;
+        if (other.tag == "Car" || other.tag == "Bus") isSpawnable = false;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Vehicle") isSpawnable = true;
+        if (other.tag == "Car" || other.tag == "Bus") isSpawnable = true;
     }
 }

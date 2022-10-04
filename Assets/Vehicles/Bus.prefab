@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 344234361921085207}
   m_Layer: 0
   m_Name: Bus
-  m_TagString: Vehicle
+  m_TagString: Bus
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -113,7 +113,7 @@ NavMeshAgent:
   m_Speed: 5
   m_Acceleration: 6
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 100
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
@@ -134,13 +134,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a35850fa9dd58f4493315571dafac4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  priority: 5
+  typePriority: 5
   raycastVerticalOffset: -1
   maxRayDistance: 10
   spaceBetweenVehicle: 8
   intersectionStopDistance: 6
   debugOn: 0
   currentlyOnRoad: 0
+  destTransform: {fileID: 0}
 --- !u!54 &344234361921085207
 Rigidbody:
   m_ObjectHideFlags: 0

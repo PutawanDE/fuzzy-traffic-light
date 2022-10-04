@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 public class VehicleNav : MonoBehaviour
 {
-    public int priority;
+    public int typePriority;
 
     [SerializeField]
     private float raycastVerticalOffset;
@@ -15,9 +15,9 @@ public class VehicleNav : MonoBehaviour
     private float intersectionStopDistance;
     [SerializeField]
     private bool debugOn;
-    [SerializeField]
+    [SerializeField, ReadOnly]
     private int currentlyOnRoad;
-
+    [SerializeField, ReadOnly]
     private Transform destTransform;
 
     private NavMeshAgent navMeshAgent;
@@ -52,7 +52,7 @@ public class VehicleNav : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, maxRayDistance))
         {
-            if (hit.collider.tag == "Vehicle")
+            if (hit.collider.tag == "Car" || hit.collider.tag == "Bus")
             {
                 if (debugOn) Debug.Log("Hit a vehicle. Distance: " + hit.distance);
 

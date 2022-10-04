@@ -8,6 +8,8 @@ TagManager:
   - DestMarker
   - JunctionMarker
   - Stop
+  - Bus
+  - Car
   layers:
   - Default
   - TransparentFX

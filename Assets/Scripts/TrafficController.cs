@@ -36,22 +36,24 @@ public class TrafficController : MonoBehaviour
     private float[] waitTime = new float[numberOfRoads];
     private float[] lastGreenLightTime = new float[numberOfRoads];
 
-
     private TrafficLightFuzzyLogic fuzzyLogic;
+    private MeasureSim measureSim;
+
     private bool isStart;
 
     public void EnqueueVehicle(GameObject v, int roadNum)
     {
         isStart = true;
         vehicleQueues[roadNum].list.Add(v);
-        currentRoadPriorites[roadNum] += v.GetComponent<VehicleNav>().priority;
+        currentRoadPriorites[roadNum] += v.GetComponent<VehicleNav>().typePriority;
         UpdateGreenLightDuration(roadNum);
     }
 
     public void DequeueVehicle(int roadNum)
     {
         currentRoadPriorites[roadNum] -= vehicleQueues[roadNum].list[0]
-            .GetComponent<VehicleNav>().priority;
+            .GetComponent<VehicleNav>().typePriority;
+        measureSim.VehiclePassed(vehicleQueues[roadNum].list[0]);
         vehicleQueues[roadNum].list.RemoveAt(0);
     }
 
@@ -63,6 +65,7 @@ public class TrafficController : MonoBehaviour
     private void Awake()
     {
         fuzzyLogic = GetComponent<TrafficLightFuzzyLogic>();
+        measureSim = GetComponent<MeasureSim>();
     }
 
     private void Start()
@@ -98,7 +101,7 @@ public class TrafficController : MonoBehaviour
                 {
                     stopMarkers[roadIdx].SetActive(false);
                     stopOtherRoads(roadIdx);
-                    ToggleGreenLight();
+                    ToggleGreenLight(roadIdx);
                     yield return new WaitForSeconds(greenLightDuration[roadIdx]);
 
                     stopMarkers[roadIdx].SetActive(true);
@@ -147,7 +150,6 @@ public class TrafficController : MonoBehaviour
         if (maxWait >= maxWaitTime) nextGreenLightIdx = maxWaitRoadIdx;
 
         Debug.Log("Next Green Light: " + nextGreenLightIdx + " ,wait time: " + waitTime[nextGreenLightIdx]);
-        waitTime[nextGreenLightIdx] = 0f;
         return nextGreenLightIdx;
     }
 
@@ -162,9 +164,9 @@ public class TrafficController : MonoBehaviour
         }
     }
 
-    private void ToggleGreenLight()
+    private void ToggleGreenLight(int roadIdx)
     {
-
+        measureSim.MeasureWaitTime(waitTime[roadIdx]);
     }
 
     private void ToggleYellowLight()

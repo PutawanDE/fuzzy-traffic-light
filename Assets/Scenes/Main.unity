@@ -1317,6 +1317,7 @@ GameObject:
   - component: {fileID: 425876430}
   - component: {fileID: 425876433}
   - component: {fileID: 425876432}
+  - component: {fileID: 425876434}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -1752,6 +1753,25 @@ MonoBehaviour:
   - queueingVehicles: 2
     priority: 2
     greenLightDuration: 2
+--- !u!114 &425876434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425876429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 563853ea94aa3bf42840da7e557904fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationSpeed: 5
+  totalRunningTime: 0
+  numberOfVehiclesPassed: 0
+  vehiclesPerMin: 0
+  numberOfBusesPassed: 0
+  averageWaitTime: 0
+  greenLightSwitchCount: 0
 --- !u!1 &450623711
 GameObject:
   m_ObjectHideFlags: 0
@@ -4188,13 +4208,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a35850fa9dd58f4493315571dafac4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  priority: 0
+  typePriority: 0
   raycastVerticalOffset: 0
   maxRayDistance: 0
   spaceBetweenVehicle: 0
   intersectionStopDistance: 0
   debugOn: 0
   currentlyOnRoad: 0
+  destTransform: {fileID: 0}
 --- !u!195 &1200724145
 NavMeshAgent:
   m_ObjectHideFlags: 0
