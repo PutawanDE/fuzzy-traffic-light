@@ -1336,24 +1336,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c1c79de5133c4448ae8b2620676922, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnCooldownMin: 1
-  spawnCooldownMax: 2
+  spawnCooldownMin: 3
+  spawnCooldownMax: 7
   roadsToSpawnOn:
   - spawnMarker: {fileID: 1182302340}
     destMarker: {fileID: 1135052127}
     spawnQuaternion: {x: 0, y: -1, z: 0, w: -0.00000004371139}
+    spawnProb: 0.3
+    busSpawnable: 0
   - spawnMarker: {fileID: 94906966}
     destMarker: {fileID: 281299091}
     spawnQuaternion: {x: 0, y: 0.70710677, z: 0, w: -0.70710677}
+    spawnProb: 0.1
+    busSpawnable: 1
   - spawnMarker: {fileID: 1481695289}
     destMarker: {fileID: 96507027}
     spawnQuaternion: {x: 0, y: 0, z: 0, w: 0}
+    spawnProb: 0.4
+    busSpawnable: 0
   - spawnMarker: {fileID: 1274299139}
     destMarker: {fileID: 1046253184}
     spawnQuaternion: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}
+    spawnProb: 0.2
+    busSpawnable: 1
   car: {fileID: 4612554735754083373, guid: fd179f274971d714cb459642d923cc91, type: 3}
   bus: {fileID: 8550674702928123794, guid: 67fce74273ccc3b4881b2287ba576060, type: 3}
-  carBusSpawnThreshold: 0.9
+  carBusSpawnThreshold: 0.4
 --- !u!4 &425876431
 Transform:
   m_ObjectHideFlags: 0
@@ -1397,6 +1405,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  maxWaitTime: 90
   isFixedTime: 0
   fixedGreenLightDuration: 30
 --- !u!114 &425876433
@@ -1516,18 +1525,18 @@ MonoBehaviour:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 11
+        time: 10
         value: 0
         inSlope: -0.4
-        outSlope: 0.22222222
+        outSlope: 0.2
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 15.5
+        time: 15
         value: 1
-        inSlope: 0.22222222
+        inSlope: 0.2
         outSlope: 0
         tangentMode: 69
         weightedMode: 0
@@ -1549,19 +1558,19 @@ MonoBehaviour:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 3
+        time: 5
         value: 0
         inSlope: -0.4
-        outSlope: 0.22222222
+        outSlope: 0.2857143
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 7.5
+        time: 8.5
         value: 1
-        inSlope: 0.22222222
-        outSlope: -0.22222222
+        inSlope: 0.2857143
+        outSlope: -0.2857143
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
@@ -1569,7 +1578,7 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 12
         value: 0
-        inSlope: -0.22222222
+        inSlope: -0.2857143
         outSlope: 0
         tangentMode: 69
         weightedMode: 0
@@ -1585,24 +1594,24 @@ MonoBehaviour:
         time: 0
         value: 0
         inSlope: 0
-        outSlope: 0.4
+        outSlope: 0.33333334
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 2.5
+        time: 3
         value: 1
-        inSlope: 0.4
-        outSlope: -0.4
+        inSlope: 0.33333334
+        outSlope: -0.33333334
         tangentMode: 69
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 5
+        time: 6
         value: 0
-        inSlope: -0.4
+        inSlope: -0.33333334
         outSlope: 0.083333336
         tangentMode: 69
         weightedMode: 0

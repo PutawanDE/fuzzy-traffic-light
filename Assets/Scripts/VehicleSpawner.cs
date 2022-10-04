@@ -9,6 +9,9 @@ public class VehicleSpawner : MonoBehaviour
         public Transform spawnMarker;
         public Transform destMarker;
         public Quaternion spawnQuaternion;
+        [Range(0f, 1f)]
+        public float spawnProb;
+        public bool busSpawnable;
     }
 
     private TrafficController trafficController;
@@ -28,13 +31,30 @@ public class VehicleSpawner : MonoBehaviour
     [SerializeField, Range(0f, 1f)]
     private float carBusSpawnThreshold;
 
+    private float[] cumulativeProb = new float[numberOfRoads];
     private IEnumerator spawnCourantine;
 
-    void Start()
+    private void Start()
     {
         trafficController = GetComponent<TrafficController>();
+        InitCumulativeProb();
         spawnCourantine = WaitAndSpawn();
         StartCoroutine(spawnCourantine);
+    }
+
+    // If value in the inspecter change, then update
+    private void OnValidate()
+    {
+        InitCumulativeProb();
+    }
+
+    private void InitCumulativeProb()
+    {
+        cumulativeProb[0] = roadsToSpawnOn[0].spawnProb;
+        for (int i = 1; i < numberOfRoads; i++)
+        {
+            cumulativeProb[i] = cumulativeProb[i - 1] + roadsToSpawnOn[i].spawnProb;
+        }
     }
 
     private IEnumerator WaitAndSpawn()
@@ -49,11 +69,13 @@ public class VehicleSpawner : MonoBehaviour
 
     private void SpawnVehicle()
     {
-        int selectedSrc = (int)Mathf.Floor(Random.Range(0f, numberOfRoads));
+        int selectedSrc = RouletteWheelSelectRoad();
 
+        if (selectedSrc == -1) return;
         if (!roadsToSpawnOn[selectedSrc].spawnMarker.GetComponent<CheckSpawnable>().isSpawnable) return;
 
-        GameObject vehicleToSpawn = Random.Range(0f, 1f) >= carBusSpawnThreshold ? bus : car;
+        GameObject vehicleToSpawn =
+            Random.Range(0f, 1f) >= carBusSpawnThreshold && roadsToSpawnOn[selectedSrc].busSpawnable ? bus : car;
 
         if (vehicleToSpawn == null) return;
 
@@ -71,5 +93,19 @@ public class VehicleSpawner : MonoBehaviour
         trafficController.EnqueueVehicle(newVehicle, selectedSrc);
         VehicleNav nav = newVehicle.GetComponent<VehicleNav>();
         nav.Init(selectedSrc, destRoad.destMarker, trafficController, selectedSrc);
+    }
+
+    private int RouletteWheelSelectRoad()
+    {
+        float rand = Random.Range(0f, cumulativeProb[numberOfRoads - 1]);
+
+        if (0f <= rand && rand <= cumulativeProb[0]) return 0;
+
+        for (int i = 1; i < numberOfRoads; i++)
+        {
+            if (cumulativeProb[i - 1] <= rand && rand <= cumulativeProb[i]) return i;
+        }
+
+        return -1;
     }
 }

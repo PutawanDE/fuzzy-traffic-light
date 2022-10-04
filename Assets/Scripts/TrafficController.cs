@@ -25,6 +25,9 @@ public class TrafficController : MonoBehaviour
     private float[] greenLightDuration = new float[numberOfRoads];
 
     [SerializeField]
+    private float maxWaitTime;
+
+    [SerializeField]
     private bool isFixedTime = false;
 
     [SerializeField]
@@ -81,11 +84,17 @@ public class TrafficController : MonoBehaviour
         {
             if (isStart)
             {
-                roadIdx = isFixedTime
-                    ? (roadIdx + 1) % numberOfRoads
-                    : FindNextGreenLightRoadIdx();
+                if (isFixedTime)
+                {
+                    roadIdx++;
+                    if (roadIdx >= 4) roadIdx = 0;
+                }
+                else
+                {
+                    roadIdx = FindNextGreenLightRoadIdx();
+                }
 
-                if (GetVehiclesCount(roadIdx) != 0)
+                if (GetVehiclesCount(roadIdx) > 0)
                 {
                     stopMarkers[roadIdx].SetActive(false);
                     stopOtherRoads(roadIdx);
@@ -99,6 +108,10 @@ public class TrafficController : MonoBehaviour
 
                     ToggleRedLight();
                 }
+                else
+                {
+                    yield return new WaitForSeconds(3f);
+                }
             }
             yield return null;
         }
@@ -106,24 +119,34 @@ public class TrafficController : MonoBehaviour
 
     private int FindNextGreenLightRoadIdx()
     {
+        int nextGreenLightIdx = 0;
+        int maxPriority = 0;
         for (int i = 0; i < numberOfRoads; i++)
         {
             waitTime[i] = Time.time - lastGreenLightTime[i];
             Debug.Log("Wait Time: " + i + "=" + waitTime[i]);
+
+            if (currentRoadPriorites[i] > maxPriority)
+            {
+                maxPriority = currentRoadPriorites[i];
+                nextGreenLightIdx = i;
+            }
         }
 
         float maxWait = 0;
-        int nextGreenLightIdx = 0;
+        int maxWaitRoadIdx = 0;
         for (int i = 0; i < numberOfRoads; i++)
         {
             if (waitTime[i] > maxWait)
             {
                 maxWait = waitTime[i];
-                nextGreenLightIdx = i;
+                maxWaitRoadIdx = i;
             }
         }
 
-        Debug.Log("Next Green Light: " + nextGreenLightIdx + " ,wait time" + maxWait);
+        if (maxWait >= maxWaitTime) nextGreenLightIdx = maxWaitRoadIdx;
+
+        Debug.Log("Next Green Light: " + nextGreenLightIdx + " ,wait time: " + waitTime[nextGreenLightIdx]);
         waitTime[nextGreenLightIdx] = 0f;
         return nextGreenLightIdx;
     }
