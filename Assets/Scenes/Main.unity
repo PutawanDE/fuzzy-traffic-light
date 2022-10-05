@@ -1337,8 +1337,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c1c79de5133c4448ae8b2620676922, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnCooldownMin: 3
-  spawnCooldownMax: 7
+  spawnCooldownMin: 1
+  spawnCooldownMax: 2
   roadsToSpawnOn:
   - spawnMarker: {fileID: 1182302340}
     destMarker: {fileID: 1135052127}
@@ -1406,9 +1406,9 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  maxWaitTime: 90
+  maxWaitTime: 80
   isFixedTime: 0
-  fixedGreenLightDuration: 30
+  fixedGreenLightDuration: 24
 --- !u!114 &425876433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1765,7 +1765,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 563853ea94aa3bf42840da7e557904fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  simulationSpeed: 5
+  simulationSpeed: 4
+  endTime: 3600
   totalRunningTime: 0
   numberOfVehiclesPassed: 0
   vehiclesPerMin: 0

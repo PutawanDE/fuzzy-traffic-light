@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class VehicleSpawner : MonoBehaviour
@@ -31,6 +32,7 @@ public class VehicleSpawner : MonoBehaviour
     [SerializeField, Range(0f, 1f)]
     private float carBusSpawnThreshold;
 
+    private Queue<GameObject>[] spawnQueues = new Queue<GameObject>[numberOfRoads];
     private float[] cumulativeProb = new float[numberOfRoads];
     private IEnumerator spawnCourantine;
 
@@ -38,6 +40,7 @@ public class VehicleSpawner : MonoBehaviour
     {
         trafficController = GetComponent<TrafficController>();
         InitCumulativeProb();
+        InitSpawnQueueArray();
         spawnCourantine = WaitAndSpawn();
         StartCoroutine(spawnCourantine);
     }
@@ -57,26 +60,54 @@ public class VehicleSpawner : MonoBehaviour
         }
     }
 
+    private void InitSpawnQueueArray()
+    {
+        for (int i = 0; i < numberOfRoads; i++)
+        {
+            spawnQueues[i] = new Queue<GameObject>();
+        }
+    }
+
+    private void Update()
+    {
+        for (int i = 0; i < numberOfRoads; i++)
+        {
+            if (spawnQueues[i].Count > 0)
+            {
+                SpawnVehicleInQueues(i);
+            }
+        }
+    }
+
     private IEnumerator WaitAndSpawn()
     {
         while (true)
         {
             float waitTime = Random.Range(spawnCooldownMin, spawnCooldownMax);
             yield return new WaitForSeconds(waitTime);
-            SpawnVehicle();
+            RandSpawnVehicle();
         }
     }
 
-    private void SpawnVehicle()
+    private void RandSpawnVehicle()
     {
         int selectedSrc = RouletteWheelSelectRoad();
 
         if (selectedSrc == -1) return;
-        if (!roadsToSpawnOn[selectedSrc].spawnMarker.GetComponent<CheckSpawnable>().isSpawnable) return;
 
-        GameObject vehicleToSpawn =
-            Random.Range(0f, 1f) >= carBusSpawnThreshold && roadsToSpawnOn[selectedSrc].busSpawnable ? bus : car;
+        GameObject randVehicle =
+            Random.Range(0f, 1f) >= carBusSpawnThreshold && roadsToSpawnOn[selectedSrc].busSpawnable
+            ? bus : car;
 
+        spawnQueues[selectedSrc].Enqueue(randVehicle);
+    }
+
+    private void SpawnVehicleInQueues(int selectedSrc)
+    {
+        if (!roadsToSpawnOn[selectedSrc].spawnMarker.GetComponent<CheckSpawnable>().isSpawnable)
+            return;
+
+        GameObject vehicleToSpawn = spawnQueues[selectedSrc].Dequeue();
         if (vehicleToSpawn == null) return;
 
         int selectedDest = (int)Mathf.Floor(Random.Range(0f, numberOfRoads));

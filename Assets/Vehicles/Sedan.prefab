@@ -138,7 +138,7 @@ MonoBehaviour:
   raycastVerticalOffset: 0
   maxRayDistance: 10
   spaceBetweenVehicle: 5
-  intersectionStopDistance: 5
+  intersectionStopDistance: 5.5
   debugOn: 0
   currentlyOnRoad: 0
   destTransform: {fileID: 0}

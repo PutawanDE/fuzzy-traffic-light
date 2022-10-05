@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MeasureSim : MonoBehaviour
 {
-    [SerializeField]
-    private float simulationSpeed = 1.0f;
+    [SerializeField] private float simulationSpeed = 1.0f;
+    [SerializeField] private float endTime;
 
     [ReadOnly, SerializeField] private float totalRunningTime;
     [ReadOnly, SerializeField] private int numberOfVehiclesPassed;
@@ -30,6 +30,11 @@ public class MeasureSim : MonoBehaviour
     private void Update()
     {
         totalRunningTime += Time.deltaTime;
+        if (totalRunningTime >= endTime)
+        {
+            StopAllCoroutines();
+            Time.timeScale = 0f;
+        }
     }
 
     public void VehiclePassed(GameObject vehicle)
