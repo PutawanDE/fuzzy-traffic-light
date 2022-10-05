@@ -12,7 +12,9 @@ public class VehicleNav : MonoBehaviour
     [SerializeField]
     private float spaceBetweenVehicle;
     [SerializeField]
-    private float intersectionStopDistance;
+    private float intersectionStopDistanceMin;
+    [SerializeField]
+    private float intersectionStopDistanceMax;
     [SerializeField]
     private bool debugOn;
     [SerializeField, ReadOnly]
@@ -24,9 +26,10 @@ public class VehicleNav : MonoBehaviour
     private TrafficController trafficController;
 
     private bool isInit;
+    private bool isPassed;
 
     public void Init(int srcRoadNum, Transform destTransform, TrafficController trafficController,
-                        int roadNum)
+                    int roadNum)
     {
         this.destTransform = destTransform;
         this.trafficController = trafficController;
@@ -40,7 +43,7 @@ public class VehicleNav : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!isInit) return;
+        if (!isInit || isPassed) return;
 
         RaycastHit hit;
         Vector3 raycastPos = new Vector3(
@@ -48,7 +51,7 @@ public class VehicleNav : MonoBehaviour
             transform.position.y + raycastVerticalOffset,
             transform.position.z);
         Ray ray = new Ray(raycastPos, transform.forward);
-        if (debugOn) Debug.DrawRay(ray.origin, ray.direction * maxRayDistance);
+        if (debugOn) Debug.DrawRay(ray.origin, ray.direction * maxRayDistance, Color.green);
 
         if (Physics.Raycast(ray, out hit, maxRayDistance))
         {
@@ -66,7 +69,8 @@ public class VehicleNav : MonoBehaviour
             {
                 if (debugOn) Debug.Log("Hit a stop marker. Distance: " + hit.distance);
 
-                if (hit.distance <= intersectionStopDistance)
+                if (intersectionStopDistanceMin <= hit.distance
+                    && hit.distance <= intersectionStopDistanceMax)
                 {
                     navMeshAgent.isStopped = true;
                     return;
@@ -85,6 +89,7 @@ public class VehicleNav : MonoBehaviour
         }
         else if (other.tag == "JunctionMarker")
         {
+            isPassed = true;
             trafficController.DequeueVehicle(currentlyOnRoad);
         }
     }

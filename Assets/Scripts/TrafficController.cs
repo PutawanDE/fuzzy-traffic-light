@@ -147,7 +147,7 @@ public class TrafficController : MonoBehaviour
             }
         }
 
-        if (maxWait >= maxWaitTime) nextGreenLightIdx = maxWaitRoadIdx;
+        if (maxWait >= maxWaitTime && GetVehiclesCount(maxWaitRoadIdx) > 0) nextGreenLightIdx = maxWaitRoadIdx;
 
         Debug.Log("Next Green Light: " + nextGreenLightIdx + " ,wait time: " + waitTime[nextGreenLightIdx]);
         return nextGreenLightIdx;

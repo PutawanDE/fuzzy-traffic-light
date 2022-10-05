@@ -137,8 +137,9 @@ MonoBehaviour:
   typePriority: 1
   raycastVerticalOffset: 0
   maxRayDistance: 10
-  spaceBetweenVehicle: 5
-  intersectionStopDistance: 5.5
+  spaceBetweenVehicle: 6
+  intersectionStopDistanceMin: 3
+  intersectionStopDistanceMax: 6
   debugOn: 0
   currentlyOnRoad: 0
   destTransform: {fileID: 0}
