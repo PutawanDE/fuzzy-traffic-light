@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
+[CustomPropertyDrawer(typeof(EditorReadOnly))]
 public class ReadOnlyDrawer : PropertyDrawer
 {
     public override float GetPropertyHeight(SerializedProperty property,

@@ -17,16 +17,23 @@ public class VehicleNav : MonoBehaviour
     private float intersectionStopDistanceMax;
     [SerializeField]
     private bool debugOn;
-    [SerializeField, ReadOnly]
+    [SerializeField, EditorReadOnly]
     private int currentlyOnRoad;
-    [SerializeField, ReadOnly]
+    [SerializeField, EditorReadOnly]
     private Transform destTransform;
+
+    [SerializeField, EditorReadOnly]
+    private float totalWaitTime;
+    private float currentWaitTime;
+
+    private float timeAtLastStop;
 
     private NavMeshAgent navMeshAgent;
     private TrafficController trafficController;
 
     private bool isInit;
     private bool isPassed;
+    private bool isSetTimeAtLastStop;
 
     public void Init(int srcRoadNum, Transform destTransform, TrafficController trafficController,
                     int roadNum)
@@ -62,6 +69,7 @@ public class VehicleNav : MonoBehaviour
                 if (hit.distance <= spaceBetweenVehicle)
                 {
                     navMeshAgent.isStopped = true;
+                    MeasureWaitTime();
                     return;
                 }
             }
@@ -73,12 +81,35 @@ public class VehicleNav : MonoBehaviour
                     && hit.distance <= intersectionStopDistanceMax)
                 {
                     navMeshAgent.isStopped = true;
+                    MeasureWaitTime();
                     return;
                 }
             }
         }
 
         navMeshAgent.isStopped = false;
+        if (isSetTimeAtLastStop)
+        {
+            totalWaitTime += currentWaitTime;
+            currentWaitTime = 0;
+        }
+        isSetTimeAtLastStop = false;
+    }
+
+    private void MeasureWaitTime()
+    {
+        if (!isSetTimeAtLastStop)
+        {
+            timeAtLastStop = Time.time;
+            isSetTimeAtLastStop = true;
+        }
+
+        currentWaitTime = Time.time - timeAtLastStop;
+    }
+
+    public float GetWaitTime()
+    {
+        return currentWaitTime += totalWaitTime;
     }
 
     private void OnTriggerEnter(Collider other)

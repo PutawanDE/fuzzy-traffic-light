@@ -7,14 +7,20 @@ public class MeasureSim : MonoBehaviour
     [SerializeField] private float simulationSpeed = 1.0f;
     [SerializeField] private float endTime;
 
-    [ReadOnly, SerializeField] private float totalRunningTime;
-    [ReadOnly, SerializeField] private int numberOfVehiclesPassed;
-    [ReadOnly, SerializeField] private float vehiclesPerMin;
-    [ReadOnly, SerializeField] private int numberOfBusesPassed;
-    [ReadOnly, SerializeField] private float averageWaitTime;
-    [ReadOnly, SerializeField] private int greenLightSwitchCount;
+    [EditorReadOnly, SerializeField] private float totalRunningTime;
+    [EditorReadOnly, SerializeField] public int longestQueue;
+    [EditorReadOnly, SerializeField] public int numberOfIncomingVehicles;
+    [EditorReadOnly, SerializeField] private int numberOfVehiclesPassed;
+    [EditorReadOnly, SerializeField] private float vehiclesPerMin;
+    [EditorReadOnly, SerializeField] private int numberOfBusesPassed;
+    [EditorReadOnly, SerializeField] private float averageWaitTime;
+    [EditorReadOnly, SerializeField] private float averageBusWaitTime;
+    [EditorReadOnly, SerializeField] private float averageGreenLightTime;
+    [EditorReadOnly, SerializeField] private int greenLightSwitchCount;
 
     private float totalWaitTime = 0f;
+    private float totalBusWaitTime = 0f;
+    private float totalGreenLightTime = 0f;
 
     private void Awake()
     {
@@ -39,15 +45,25 @@ public class MeasureSim : MonoBehaviour
 
     public void VehiclePassed(GameObject vehicle)
     {
+        float waitTime = vehicle.GetComponent<VehicleNav>().GetWaitTime();
+
         numberOfVehiclesPassed++;
-        if (vehicle.tag == "Bus") numberOfBusesPassed++;
+        if (vehicle.tag == "Bus")
+        {
+            numberOfBusesPassed++;
+            totalBusWaitTime += waitTime;
+            averageBusWaitTime = totalBusWaitTime / numberOfBusesPassed;
+        }
+
+        totalWaitTime += waitTime;
+        averageWaitTime = totalWaitTime / numberOfVehiclesPassed;
     }
 
-    public void MeasureWaitTime(float waitTime)
+    public void MeasureGreenLightTime(float greenLightTime)
     {
         greenLightSwitchCount++;
-        totalWaitTime += waitTime;
-        averageWaitTime = totalWaitTime / greenLightSwitchCount;
+        totalGreenLightTime += greenLightTime;
+        averageGreenLightTime = totalGreenLightTime / greenLightSwitchCount;
     }
 
     private IEnumerator ComputeVehiclesPerMin()

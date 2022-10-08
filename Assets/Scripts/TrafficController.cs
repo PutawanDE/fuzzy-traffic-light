@@ -15,26 +15,23 @@ public class TrafficController : MonoBehaviour
     [SerializeField]
     private GameObject[] stopMarkers = new GameObject[numberOfRoads];
 
-    [SerializeField, NonReorderable]
+    [SerializeField, NonReorderable, EditorReadOnly]
     private VehicleQueue[] vehicleQueues = new VehicleQueue[numberOfRoads];
 
-    [SerializeField]
+    [SerializeField, EditorReadOnly]
     private int[] currentRoadPriorites = new int[numberOfRoads];
 
-    [SerializeField]
+    [SerializeField, EditorReadOnly]
     private float[] greenLightDuration = new float[numberOfRoads];
 
     [SerializeField]
-    private float maxWaitTime;
+    private float maxWaitTimeLimit;
 
     [SerializeField]
     private bool isFixedTime = false;
 
     [SerializeField]
     private float fixedGreenLightDuration;
-
-    private float[] waitTime = new float[numberOfRoads];
-    private float[] lastGreenLightTime = new float[numberOfRoads];
 
     private TrafficLightFuzzyLogic fuzzyLogic;
     private MeasureSim measureSim;
@@ -54,12 +51,25 @@ public class TrafficController : MonoBehaviour
         currentRoadPriorites[roadNum] -= vehicleQueues[roadNum].list[0]
             .GetComponent<VehicleNav>().typePriority;
         measureSim.VehiclePassed(vehicleQueues[roadNum].list[0]);
+
         vehicleQueues[roadNum].list.RemoveAt(0);
     }
 
     public int GetVehiclesCount(int roadNum)
     {
         return vehicleQueues[roadNum].list.Count;
+    }
+
+    public float GetWaitTimeFirstVehicle(int roadNum)
+    {
+        if (GetVehiclesCount(roadNum) > 0)
+        {
+            return vehicleQueues[roadNum].list[0].GetComponent<VehicleNav>().GetWaitTime();
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     private void Awake()
@@ -101,15 +111,11 @@ public class TrafficController : MonoBehaviour
                 {
                     stopMarkers[roadIdx].SetActive(false);
                     stopOtherRoads(roadIdx);
-                    ToggleGreenLight(roadIdx);
+                    measureSim.MeasureGreenLightTime(greenLightDuration[roadIdx]);
                     yield return new WaitForSeconds(greenLightDuration[roadIdx]);
 
                     stopMarkers[roadIdx].SetActive(true);
-                    lastGreenLightTime[roadIdx] = Time.time;
-                    ToggleYellowLight();
                     yield return new WaitForSeconds(3.0f);
-
-                    ToggleRedLight();
                 }
                 else
                 {
@@ -122,17 +128,14 @@ public class TrafficController : MonoBehaviour
 
     private int FindNextGreenLightRoadIdx()
     {
-        int nextGreenLightIdx = 0;
         int maxPriority = 0;
+        int maxPriorityRoadIdx = 0;
         for (int i = 0; i < numberOfRoads; i++)
         {
-            waitTime[i] = Time.time - lastGreenLightTime[i];
-            Debug.Log("Wait Time: " + i + "=" + waitTime[i]);
-
             if (currentRoadPriorites[i] > maxPriority)
             {
                 maxPriority = currentRoadPriorites[i];
-                nextGreenLightIdx = i;
+                maxPriorityRoadIdx = i;
             }
         }
 
@@ -140,16 +143,25 @@ public class TrafficController : MonoBehaviour
         int maxWaitRoadIdx = 0;
         for (int i = 0; i < numberOfRoads; i++)
         {
-            if (waitTime[i] > maxWait)
+            if (GetWaitTimeFirstVehicle(i) > maxWait)
             {
-                maxWait = waitTime[i];
+                maxWait = GetWaitTimeFirstVehicle(i);
                 maxWaitRoadIdx = i;
             }
         }
 
-        if (maxWait >= maxWaitTime && GetVehiclesCount(maxWaitRoadIdx) > 0) nextGreenLightIdx = maxWaitRoadIdx;
+        int nextGreenLightIdx = 0;
+        if (maxWait >= maxWaitTimeLimit)
+        {
+            nextGreenLightIdx = maxWaitRoadIdx;
+        }
+        else
+        {
+            nextGreenLightIdx = maxPriorityRoadIdx;
+        }
 
-        Debug.Log("Next Green Light: " + nextGreenLightIdx + " ,wait time: " + waitTime[nextGreenLightIdx]);
+        Debug.Log("Next Green Light: " + nextGreenLightIdx + " ,wait time: " +
+                    GetWaitTimeFirstVehicle(nextGreenLightIdx));
         return nextGreenLightIdx;
     }
 
@@ -162,20 +174,5 @@ public class TrafficController : MonoBehaviour
                 stopMarkers[i].SetActive(true);
             }
         }
-    }
-
-    private void ToggleGreenLight(int roadIdx)
-    {
-        measureSim.MeasureWaitTime(waitTime[roadIdx]);
-    }
-
-    private void ToggleYellowLight()
-    {
-
-    }
-
-    private void ToggleRedLight()
-    {
-
     }
 }

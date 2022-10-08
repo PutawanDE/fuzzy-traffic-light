@@ -1309,7 +1309,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  maxWaitTime: 80
+  maxWaitTimeLimit: 80
   isFixedTime: 0
   fixedGreenLightDuration: 24
 --- !u!114 &425876433
@@ -1668,13 +1668,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 563853ea94aa3bf42840da7e557904fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  simulationSpeed: 5
-  endTime: 3600
+  simulationSpeed: 4
+  endTime: 1800
   totalRunningTime: 0
+  longestQueue: 0
+  numberOfIncomingVehicles: 0
   numberOfVehiclesPassed: 0
   vehiclesPerMin: 0
   numberOfBusesPassed: 0
   averageWaitTime: 0
+  averageBusWaitTime: 0
+  averageGreenLightTime: 0
   greenLightSwitchCount: 0
 --- !u!1 &450623711
 GameObject:
@@ -4218,6 +4222,7 @@ MonoBehaviour:
   debugOn: 0
   currentlyOnRoad: 0
   destTransform: {fileID: 0}
+  totalWaitTime: 0
 --- !u!195 &1200724145
 NavMeshAgent:
   m_ObjectHideFlags: 0

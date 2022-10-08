@@ -16,6 +16,7 @@ public class VehicleSpawner : MonoBehaviour
     }
 
     private TrafficController trafficController;
+    private MeasureSim measureSim;
 
     private const int numberOfRoads = TrafficController.numberOfRoads;
 
@@ -39,6 +40,8 @@ public class VehicleSpawner : MonoBehaviour
     private void Start()
     {
         trafficController = GetComponent<TrafficController>();
+        measureSim = GetComponent<MeasureSim>();
+
         InitCumulativeProb();
         InitSpawnQueueArray();
         spawnCourantine = WaitAndSpawn();
@@ -77,6 +80,20 @@ public class VehicleSpawner : MonoBehaviour
                 SpawnVehicleInQueues(i);
             }
         }
+
+        FindLongestQueue();
+    }
+
+    private void FindLongestQueue()
+    {
+        for (int i = 0; i < numberOfRoads; i++)
+        {
+            int visible = trafficController.GetVehiclesCount(i);
+            int toSpawn = spawnQueues[i].Count;
+            int total = visible + toSpawn;
+
+            if (total > measureSim.longestQueue) measureSim.longestQueue = total;
+        }
     }
 
     private IEnumerator WaitAndSpawn()
@@ -100,6 +117,7 @@ public class VehicleSpawner : MonoBehaviour
             ? bus : car;
 
         spawnQueues[selectedSrc].Enqueue(randVehicle);
+        measureSim.numberOfIncomingVehicles++;
     }
 
     private void SpawnVehicleInQueues(int selectedSrc)
